@@ -20,6 +20,7 @@ body {
 
 /* header */
 .site-header {
+  position: relative;
   text-align: center;
   padding-top: 50px;
   padding-bottom: 10px;
@@ -36,14 +37,45 @@ body {
   margin-bottom: 10px;
 }
 
-/* category filter */
+/* language direction toggle */
+.dir-toggle {
+  position: absolute;
+  top: 12px;
+  inset-inline-end: 0;
+  background: none;
+  border: 1px solid #000;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: #000;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.dir-toggle:hover {
+  background: #000;
+  color: #fff;
+}
+
+.dir-toggle[aria-pressed="true"] {
+  background: #000;
+  color: #fff;
+}
+
+/* category filter + search */
 .search-section {
   margin: 30px 0;
   display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .search-section select {
-  width: 100%;
+  flex: 1 1 220px;
   padding: 16px;
   font-size: 18px;
   border: 2px solid #000;
@@ -54,6 +86,36 @@ body {
 }
 
 .search-section select:focus {
+  outline: none;
+  border-color: #666;
+}
+
+.search-input-wrapper {
+  position: relative;
+  flex: 1 1 220px;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-wrapper i {
+  position: absolute;
+  inset-inline-start: 16px;
+  color: #666;
+  pointer-events: none;
+}
+
+#searchInput {
+  width: 100%;
+  padding-block: 16px;
+  padding-inline-start: 44px;
+  padding-inline-end: 16px;
+  font-size: 18px;
+  border: 2px solid #000;
+  border-radius: 8px;
+  font-family: inherit;
+}
+
+#searchInput:focus {
   outline: none;
   border-color: #666;
 }
@@ -104,6 +166,7 @@ body {
   border: none;
   border-bottom: 2px solid #ccc;
   background: transparent;
+  font-family: inherit;
 }
 
 .chat-form input:focus {
@@ -161,7 +224,7 @@ body {
 }
 
 .site-footer a {
-  margin: 0 8px;
+  margin-inline: 8px;
   color: #000;
   text-decoration: none;
 }
@@ -273,13 +336,13 @@ body {
 .chat-message.user {
   background: #000;
   color: #fff;
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 
 .chat-message.assistant {
   background: #eee;
   color: #333;
-  margin-right: auto;
+  margin-inline-end: auto;
 }
 
 /* selected products */
@@ -288,11 +351,6 @@ body {
   padding: 20px;
   border: 2px solid #000;
   border-radius: 8px;
-}
-
-.selected-products h2 {
-  font-size: 20px;
-  margin-bottom: 20px;
 }
 
 .selected-header {
@@ -382,5 +440,16 @@ body {
 }
 
 .generate-btn i {
-  margin-right: 8px;
+  margin-inline-end: 8px;
+}
+
+/* —— RTL-specific tweaks —— */
+/* Flex "row" direction already mirrors automatically based on the
+   document's `dir` attribute, and every spacing/positioning rule above
+   uses logical properties (margin-inline-*, padding-inline-*, inset-inline-*)
+   instead of physical left/right, so the grid, selected list, and chat
+   interface all flip correctly with no extra rules needed. This block is
+   just for the couple of cases that need an explicit nudge. */
+html[dir="rtl"] .chat-form button i {
+  transform: scaleX(-1); /* mirror the send-paper-plane icon so it points the right way */
 }

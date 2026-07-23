@@ -1,5 +1,7 @@
 /* ---------- element refs ---------- */
 const categoryFilter = document.getElementById("categoryFilter");
+const searchInput = document.getElementById("searchInput");
+const dirToggle = document.getElementById("dirToggle");
 const productsContainer = document.getElementById("productsContainer");
 const selectedProductsList = document.getElementById("selectedProductsList");
 const generateRoutineBtn = document.getElementById("generateRoutine");
@@ -51,13 +53,22 @@ function saveSelectedIds() {
 /* ---------- rendering: product grid ---------- */
 function getFilteredProducts() {
   const category = categoryFilter.value;
-  if (!category) return allProducts;
-  return allProducts.filter((p) => p.category === category);
+  const query = searchInput.value.trim().toLowerCase();
+
+  return allProducts.filter((p) => {
+    const matchesCategory = !category || p.category === category;
+    const matchesQuery =
+      !query ||
+      p.name.toLowerCase().includes(query) ||
+      p.brand.toLowerCase().includes(query) ||
+      p.description.toLowerCase().includes(query);
+    return matchesCategory && matchesQuery;
+  });
 }
 
 function displayProducts(products) {
   if (products.length === 0) {
-    productsContainer.innerHTML = `<div class="placeholder-message">No products in this category.</div>`;
+    productsContainer.innerHTML = `<div class="placeholder-message">No products match your search.</div>`;
     return;
   }
 
@@ -124,6 +135,26 @@ function toggleProductSelection(id) {
   }
   saveSelectedIds();
   renderAll();
+}
+
+/* ---------- RTL / text direction toggle ---------- */
+function applyDirection(dir) {
+  document.documentElement.dir = dir;
+  dirToggle.setAttribute("aria-pressed", String(dir === "rtl"));
+  dirToggle.innerHTML =
+    dir === "rtl"
+      ? `<i class="fa-solid fa-globe"></i> LTR`
+      : `<i class="fa-solid fa-globe"></i> RTL`;
+}
+
+function loadDirection() {
+  return localStorage.getItem("textDirection") || "ltr";
+}
+
+function toggleDirection() {
+  const next = document.documentElement.dir === "rtl" ? "ltr" : "rtl";
+  localStorage.setItem("textDirection", next);
+  applyDirection(next);
 }
 
 function clearAllSelections() {
@@ -267,6 +298,8 @@ function setFormBusy(isBusy) {
 
 /* ---------- event listeners ---------- */
 categoryFilter.addEventListener("change", renderAll);
+searchInput.addEventListener("input", renderAll);
+dirToggle.addEventListener("click", toggleDirection);
 
 productsContainer.addEventListener("click", (e) => {
   const descBtn = e.target.closest(".desc-toggle");
@@ -305,6 +338,7 @@ chatForm.addEventListener("submit", handleChatSubmit);
 
 /* ---------- init ---------- */
 (async function init() {
+  applyDirection(loadDirection());
   await loadProducts();
   renderAll();
 })();
