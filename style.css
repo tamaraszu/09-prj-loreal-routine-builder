@@ -295,6 +295,34 @@ body {
   margin-bottom: 20px;
 }
 
+.selected-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.selected-header h2 {
+  margin-bottom: 0;
+}
+
+.clear-btn {
+  background: none;
+  border: 1px solid #000;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: #000;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.clear-btn:hover {
+  background: #000;
+  color: #fff;
+}
+
 #selectedProductsList {
   display: flex;
   flex-wrap: wrap;
