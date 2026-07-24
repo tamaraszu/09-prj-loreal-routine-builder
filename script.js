@@ -251,8 +251,8 @@ async function handleGenerateRoutine() {
   setFormBusy(true);
   try {
     const routine = await fetchFromWorker(conversationHistory);
-    conversationHistory.push({ role: "assistant", content: routine });
-    updateChatMessage(loadingId, routine);
+    conversationHistory.push({ role: "assistant", content: routine || "Sorry, I didn't get a response back." });
+    updateChatMessage(loadingId, routine || "Sorry, I didn't get a response back.");
   } catch (err) {
     console.error(err);
     updateChatMessage(loadingId, "Sorry, I couldn't generate a routine right now. Please check your worker setup and try again.");
@@ -278,8 +278,8 @@ async function handleChatSubmit(e) {
   setFormBusy(true);
   try {
     const reply = await fetchFromWorker(conversationHistory);
-    conversationHistory.push({ role: "assistant", content: reply });
-    updateChatMessage(loadingId, reply);
+    conversationHistory.push({ role: "assistant", content: reply || "Sorry, I didn't get a response back." });
+    updateChatMessage(loadingId, reply || "Sorry, I didn't get a response back.");
   } catch (err) {
     console.error(err);
     updateChatMessage(loadingId, "Sorry, something went wrong reaching the assistant. Please try again.");

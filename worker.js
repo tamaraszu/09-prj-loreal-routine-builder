@@ -48,6 +48,15 @@ export default {
       return jsonResponse({ error: "'messages' array is required" }, 400);
     }
 
+    // Guard against any message that somehow has null/undefined/non-string
+    // content -- OpenAI rejects the whole request if even one entry is bad.
+    const sanitizedMessages = messages
+      .filter((m) => m && typeof m.role === "string")
+      .map((m) => ({
+        role: m.role,
+        content: typeof m.content === "string" ? m.content : "",
+      }));
+
     try {
       const openaiRes = await fetch("https://api.openai.com/v1/responses", {
         method: "POST",
@@ -59,13 +68,15 @@ export default {
           model: MODEL,
           // Responses API accepts the same {role, content} shape as
           // Chat Completions, so the front end doesn't need to change.
-          input: messages,
+          input: sanitizedMessages,
           tools: [{ type: "web_search_preview" }],
         }),
       });
 
       if (!openaiRes.ok) {
         const errText = await openaiRes.text();
+        console.log("OpenAI request failed. Sent:", JSON.stringify(sanitizedMessages));
+        console.log("OpenAI error response:", errText);
         return jsonResponse({ error: `OpenAI error: ${errText}` }, 502);
       }
 
