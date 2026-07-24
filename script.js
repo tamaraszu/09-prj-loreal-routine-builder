@@ -15,7 +15,7 @@ const sendBtn = document.getElementById("sendBtn");
 /* Point this at your deployed worker (see worker.js for the worker code
    and deploy steps). The worker holds the real OpenAI key server-side,
    so nothing secret lives in this file. */
-const WORKER_ENDPOINT = "https://YOUR-WORKER-NAME.YOUR-SUBDOMAIN.workers.dev";
+const WORKER_ENDPOINT = "https://lorealbot.tamiszuchet.workers.dev/";
 
 /* ---------- system prompt: keeps the assistant on-topic ---------- */
 const SYSTEM_PROMPT = `You are a friendly L'Oreal beauty advisor chatbot embedded in a routine-builder app.
